@@ -1,0 +1,74 @@
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+      <form {% if tipo == '4' %} onsubmit="return validacion()"  {% endif %} role="form" action="{% url 'explicacion:modificar_respuesta_' tipo pk %}" method="post">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">x</button>
+        {% if tipo == '1' %}
+          <h3 class="text-center"> {{ o.opcion.pregunta }} </h3>  
+        {% else %}
+          <h3 class="text-center"> {{ o.pregunta }} </h3>
+        {% endif %}
+      </div>
+      <div class="modal-body">
+        {% csrf_token %}
+        <div class="panel panel-default">
+          <div class="panel-body" style="text-align: center;">
+
+            <div class="row"><label>Respuesta</label></div>
+            {{ formulario.respuesta}}
+            {% if tipo == '4' %}
+            <div id="div_justificacion">
+              <label>Justifique su respuesta</label>
+              <div class="row">
+                {{ formulario.justificacion.errors }}              
+              {{ formulario.justificacion }}
+              </div>
+              
+            </div> 
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="col-lg-12 text-right">
+          <input type="submit" class="btn btn-primary" name="submit" value="Guardar">
+          <button type="button" class="btn btn-default" onclick="return cerrar_modal()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  $(function(){
+    var select = document.getElementById('id_respuesta');
+    
+    if (select.value == "True" ){
+     $('#div_justificacion').hide(); 
+    }else if (select.value == "False" ){
+      $('#div_justificacion').show(); 
+    }
+
+     $('#id_respuesta').on('change', function (){
+      var select = document.getElementById('id_respuesta');
+      if (select.value == "True" ){
+        $('#div_justificacion').hide(); 
+      }else if (select.value == "False" ){
+        $('#div_justificacion').show(); 
+      }
+     });
+  });    
+
+function validacion() {
+  var select = document.getElementById('id_respuesta');
+  var justificacion = document.getElementById('id_justificacion');
+  if (select.value == "False" && justificacion.value == '') {
+    alert('Complete el campo de justificacion');
+    return false;
+  }
+  return true;
+}
+</script>

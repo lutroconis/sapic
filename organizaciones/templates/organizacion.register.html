@@ -1,0 +1,242 @@
+{% extends "base.inicio.html" %}
+{% block titulo %}_-=SAPIC-Registrar Organizacion Social=-_{% endblock titulo %}
+{% block extracss %}
+{% block extra_constantes %}
+    <script type="text/javascript">
+        // Objeto Json lista de usuarios
+        var LISTAR_ORG = "{% url 'organizaciones:listar_orgs' %}"
+        ruta = '{% url 'organizaciones:modal_org' request.user.pk %}';
+        //var organizaciones = "{{ request.user.pk }}"
+    </script>
+{% endblock extra_constantes %}
+{% load staticfiles %}
+    <link href="{% static 'bootstrap-3/css/bootstrap-toggle.min.css'%}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'plugins/datepicker/datepicker3.css' %}">
+
+    <link rel="stylesheet" href="{% static 'DataTables/media/css/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/checked_img.css' %}">
+{% endblock extracss %}
+{% block extrajs %}
+    <script src="{% static 'bootstrap-3/js/bootstrap-toggle.min.js'%}"></script>
+    <script src="{% static 'js/formset.js'%}"></script>
+    <script src="{% static 'plugins/datepicker/moment-with-locales.js' %}"></script>
+    <!-- bootstrap datepicker -->
+    <script src="{% static 'plugins/datepicker/bootstrap-datepicker.js' %}"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#id_orders_table tbody tr').formset({
+            // For inline formsets, be sure to set the prefix, as the default prefix
+            // ('form') isn't correct.
+            // Django appears to generate the prefix from the lowercase plural
+            // name of the related model, with camel-case converted to underscores.
+            prefix: 'vocero_set'
+            })
+        })
+        $(document).ready(function ()
+        {
+            $('#municipio, #parroquia').hide()
+            $('#id_estado').change(function(event){
+                var url_mun = "{% url 'utils:obtener_municipios' %}"
+                cargar_municipios($(this).val(), url_mun);
+            })
+
+            $('#id_municipio').change(function(event){
+                var url_parr = "{% url 'utils:obtener_parroquias' %}"
+                cargar_parroquias($(this).val(), url_parr);
+                })
+            var eliminar = "<i class='fa fa-remove' title='Eliminar Tabla'>"
+            $('.delete-row').text('');
+            $('.delete-row').append(eliminar);
+            $('.add-row').click(function(event) {
+              $('.delete-row').text("");
+              $('.delete-row').append(eliminar);
+            });
+            var agregar  = "<i class='fa fa-plus-circle' title='Agregar'>";
+            $('.add-row').html("<b>Agregar</b>");
+            $('.add-row').append(agregar);
+        })
+    </script>
+    <script type="text/javascript" src="{% static 'utils/list_ubicacion.js' %}"></script>
+    <script type="text/javascript" src="{% static 'organizaciones/registro_organizaciones.js' %}"></script>
+
+     <script src="{% static 'DataTables/media/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'organizaciones/org_listDataTable.js' %}" type="text/javascript"></script>
+    <script src="{% static 'start/modals.js' %}"></script>
+    <script type="text/javascript">
+          //id_user = {{request.user.pk}};
+          //id_organizacion = {{request.fk_tipo_organizacion.pk}};
+          id_organizacion = {{request.user.pk}};
+    </script>
+{% endblock extrajs %}
+{% block contenido %}
+<div class="contenido-sapic">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="panel-sapic">
+        <!-- Inicio Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active" id="registrars">
+            <a href="#registrar" aria-controls="registrar" role="tab" data-toggle="tab">Registrar organización comunal</a>
+          </li>
+          <li role="presentation" id="consultas">
+            <a href="#consulta" aria-controls="consulta" role="tab" data-toggle="tab">Consultar organización comunal  </a>
+          </li>
+        </ul>
+        <!-- Fin Nav tabs -->
+        <form id="forma_activar" method="post">
+          {% csrf_token %}
+        <!-- Inicio Tab panes -->
+        <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="registrar">
+            <h3>Registrar organizaciones comunales</h3>
+              <div class="row">
+                <div class="col-xs-6">
+                  {{forms.organizacion_social.fk_tipo_organizacion.label}}
+                  {{forms.organizacion_social.fk_tipo_organizacion}}
+                </div>
+                <div class="col-xs-6">
+                  {{forms.organizacion_social.codigo.label}}
+                  {{forms.organizacion_social.codigo}}
+                </div>
+              </div><br>
+              <div class="row">
+                <div class="col-xs-6">
+                  {{forms.organizacion_social.rif.label}}
+                  {{forms.organizacion_social.rif}}
+                </div>
+                <div class="col-xs-6">
+                  {{forms.organizacion_social.situr.label}}
+                  {{forms.organizacion_social.situr}}
+                </div>
+              </div><br>
+            <div class="row">
+              <div class="col-xs-6">
+                {{forms.organizacion_social.nombre.label}}
+                {{forms.organizacion_social.nombre}}
+              </div>
+              <div class="col-xs-6">
+                {{forms.organizacion_social.email.label}}
+                {{forms.organizacion_social.email}}
+              </div>
+            </div><br>
+            <div class="row">
+              <div class="col-xs-6">
+                {{forms.organizacion_social.fecha_conformacion.label}}
+                {{forms.organizacion_social.fecha_conformacion}}
+              </div>
+              <div class="col-xs-6">
+                {{forms.organizacion_social.sector.label}}
+                {{forms.organizacion_social.sector}}
+              </div>
+            </div><br>
+            <div class="row">
+              <div class="col-xs-4">
+                {{forms.organizacion_social.estado.label}}
+                {{forms.organizacion_social.estado}}
+              </div>
+              <div class="col-xs-4" id="municipio">
+                {{forms.organizacion_social.municipio.label}}
+                {{forms.organizacion_social.municipio}}
+              </div>
+              <div class="col-xs-4" id="parroquia">
+                {{forms.organizacion_social.localidad.label}}
+                {{forms.organizacion_social.localidad}}
+              </div>
+            </div><br>
+            <div class="row">
+              <div class="col-xs-12">
+                {{forms.organizacion_social.activa.label}}
+                {{forms.organizacion_social.activa}}
+              </div>
+            </div><br>
+            <div class="row">
+            <div class="form-group col-xs-12 has-feedback">
+              <div class="box">
+                <div class="box-header">
+                  <h3 class="box-title">
+                    Voceros o usuario a pre registrar
+                  </h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                  <table class="table table-hover" id="id_orders_table">
+                    <thead>
+                      <tr>
+                          <th scope="col">Documento de Identidad</th>
+                          <th scope="col">Nombres y Apellidos</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {{ forms.voceros.management_form }}
+                    {% for form in forms.voceros  %}
+                    <tr id="{{ form.prefix }}-row">
+                      <td>
+                      {{ form.fk_tipo_documento }}
+                      {{ form.documento_identidad }}
+                      </td>
+                      <td>
+                      {{ form.nombres }} {{ form.apellidos }}
+                      </td>
+                      <td></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div> <!-- fin class form group -->
+            </div> <!-- fin row pre registro voceros -->
+            <button type="submit" class="btn btn-danger btn-block btn-fla">Registrar organización comunal</button>
+        </div><br><!-- fin first tabpanel -->
+        <div role="tabpanel" class="tab-pane" id="consulta">
+            <h3>Consultar organizaciones comunales</h3>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>
+                        Lista de Organizaciones
+                        <small>Muestra los datos de todas las Organizaciones Sociales Registradas</small>
+                    </h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                    <i class="fa fa-list"></i>
+                                    <h3 class="box-title"> Lista de Organizaciones Sociales</h3>
+                                    </div>
+                                    <!--<div class="col-lg-3">
+                                        <a href="{% url 'users:registrar'%}" class="glyphicon glyphicon-plus btn btn-block btn-primary"> Agregar Usuario</a>
+                                    </div><br><br>-->
+                                    <div class="box-body pad table-responsive">
+                                    <form id="forma_activar" method="post">
+                                    {% csrf_token %}
+                                        <table id="datatable" class="diplay">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tipo</th>
+                                                    <th>Código</th>
+                                                    <th>RIF</th>
+                                                    <th>SITUR</th>
+                                                    <th>Nombre</th>
+                                                    <th>email</th>
+                                                    <th>Fecha de Conformación</th>
+                                                    <th>Sector</th>
+                                                    <th>Activo/Inactivo</th>
+                                                    <th>Localidad</th>
+                                                    <th>Activar/Inactivar Organizacion</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div> <!-- Fin second panel -->
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock contenido %}
