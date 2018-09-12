@@ -8,7 +8,6 @@
   <link rel="stylesheet" type="text/css" href="{% static "DataTables/extensions/Buttons/css/buttons.dataTables.min.css" %}">
   <link rel="stylesheet" type="text/css" href="{% static "DataTables/extensions/Select/css/select.dataTables.min.css" %}">
   <link rel="stylesheet" type="text/css" href="{% static "DataTables/extensions/Responsive/css/responsive.dataTables.min.css" %}">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 {% endblock extracss %}
 {% block extrajs %}
   <script type="text/javascript" language="javascript" src="{% static "DataTables/media/js/jquery.dataTables.min.js" %}"></script>
@@ -16,7 +15,7 @@
   <script type="text/javascript" language="javascript" src="{% static "DataTables/extensions/Buttons/js/buttons.print.min.js" %}"></script>
   <script type="text/javascript" language="javascript" src="{% static "DataTables/extensions/Buttons/js/buttons.jqueryui.js" %}"></script>
   <script type="text/javascript" language="javascript" src="{% static "DataTables/extensions/Buttons/js/buttons.html5.min.js" %}"></script>
-  <script src="{% static 'js/funciones.js' %}"></script>
+  <script src="{% static "js/funciones.js" %}"></script>
 {% endblock extrajs %}
 {% block contenido_principal %}
     <div class="col-xs-12">
@@ -35,7 +34,6 @@
                           <th class="politica0">Pregunta</th>
                           <th class="politica1">Respuesta</th>
                           <th class="politica2">Consulta</th>
-                          <th class="politica3">Accion</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -43,20 +41,18 @@
                         {% if respuesta.respuesta %}
                           <tr>
                               <td>{{ respuesta.pregunta }}</td>
-                              <td>Si</td>  
-                              <td>{{ respuesta.pregunta.consulta.nombre_consulta | cut:"Información sobre la " | cut:"información sobre las " | cut:"Información sobre " | title}}</td>                        
-                              <td><a class="btn" onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.pregunta.tipo_pregunta.pk respuesta.pk %}')"><i class="glyphicon glyphicon-edit"></i></a></td>
+                              <td onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.pregunta.tipo_pregunta.pk respuesta.pk %}')">Si</td>  
+                              <td>{{ respuesta.pregunta.consulta.nombre_consulta | cut:"Información sobre la " | cut:"información sobre las " | cut:"Información sobre " | title}}</td>
                           </tr>
                         {% else %}
                           <tr>
                             <td> {{respuesta.pregunta}} </td>
                             {% for justificacion in abierta  %}
                               {% if justificacion.es_justificacion and justificacion.pregunta.pk == respuesta.pregunta.pk %}
-                                <td>No,{{justificacion.texto_respuesta}} </td>  
+                                <td onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.pregunta.tipo_pregunta.pk respuesta.pk %}')">No,{{justificacion.texto_respuesta}} </td>  
                               {% endif %}
                             {% endfor %}
                             <td>{{ respuesta.pregunta.consulta.nombre_consulta | cut:"Información sobre la " | cut:"información sobre las " | cut:"Información sobre " | title}}</td>
-                            <td><a class="btn" onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.pregunta.tipo_pregunta.pk respuesta.pk %}')" ><i class="glyphicon glyphicon-edit"></i></a></td>
                           </tr>
                         {% endif %} 
                           
@@ -65,9 +61,8 @@
                       {% for respuesta in opciones %}
                       <tr>
                           <td>{{ respuesta.opcion.pregunta }}</td>
-                          <td>{{ respuesta.opcion }}</td>
-                          <td>{{ respuesta.opcion.pregunta.consulta.nombre_consulta | cut:"Información sobre la " | cut:"información sobre las " | cut:"Información sobre " | title}}</td> 
-                          <td><a class="btn" onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.opcion.pregunta.tipo_pregunta.pk respuesta.pk %}')"><i class="glyphicon glyphicon-edit"></i></a></td>  
+                          <td onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.opcion.pregunta.tipo_pregunta.pk respuesta.pk %}')">{{ respuesta.opcion }}</td>
+                          <td>{{ respuesta.opcion.pregunta.consulta.nombre_consulta | cut:"Información sobre la " | cut:"información sobre las " | cut:"Información sobre " | title}}</td>  
                       </tr>
                       {% endfor %}
                       {% for respuesta in abierta %}
@@ -75,9 +70,8 @@
                           {% if not respuesta.es_justificacion %}
                           <tr>
                             <td>{{ respuesta.pregunta }}</td>
-                            <td>{{ respuesta.texto_respuesta }}</td>
+                            <td onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.pregunta.tipo_pregunta.pk respuesta.pk %}')">{{ respuesta.texto_respuesta }}</td>
                             <td>{{ respuesta.pregunta.consulta.nombre_consulta | cut:"Información sobre la " | cut:"información sobre las " | cut:"Información sobre " | title}}</td> 
-                          <td><a class="btn" onclick="return abrir_modal('{% url 'explicacion:modificar_respuesta_' respuesta.pregunta.tipo_pregunta.pk respuesta.pk %}')"><i class="glyphicon glyphicon-edit"></i></a></td>
                           </tr>     
                           {% endif %}
                       
@@ -86,8 +80,7 @@
                       <tr>
                           <td>{{ respuesta.pregunta }}</td>
                           <td>{{ respuesta.coordenadas }}</td>
-                          <td>{{ respuesta.pregunta.consulta.nombre_consulta }}</td> 
-                          <td><a class="btn" href="#"><i class="icon"></i></a></td>         
+                          <td>{{ respuesta.pregunta.consulta.nombre_consulta }}</td>        
                       </tr>
                       {% endfor %}
                   </tbody>

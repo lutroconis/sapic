@@ -159,7 +159,6 @@ function abrir_modal(url)
       "columnDefs": [
         { width: '40%', targets: 'social0' },
         { width: '50%', targets: 'social1' },
-        { "searchable": false, targets: ['social3','politica3']},
         { width: '20%', targets: 'politica2' },
       ],
       initComplete: function () {
@@ -182,7 +181,7 @@ function abrir_modal(url)
             } );
         },
       "language": {
-        url: " ../DataTables/media/js/Spanish.json"
+        url: "/static/DataTables/media/js/Spanish.json"
       },
       "lengthMenu": [ [10, 50, 100, -1], [10, 50, 100, "Todo"] ],
       
